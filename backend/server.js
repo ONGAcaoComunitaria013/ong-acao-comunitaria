@@ -8,7 +8,7 @@ const documentoRoutes = require('./routes/documentoRoutes');
 
 
 // Importações das rotas
-const recadoRoutes = require('./routes/RecadoRoutes');
+const recadoRoutes = require('./routes/recadoRoutes');
 const fotoRoutes = require('./routes/fotoRoutes');
 const authRoutes = require('./routes/authRoutes'); // ✅ adicionado aqui
 
