@@ -62,3 +62,37 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((err) => {
     console.error('❌ Erro ao conectar no MongoDB:', err);
   });
+
+
+  const nodemailer = require("nodemailer");
+
+app.post("/api/contato", async (req, res) => {
+  const { nome, email, mensagem } = req.body;
+
+  if (!nome || !email || !mensagem) {
+    return res.status(400).json({ error: "Preencha todos os campos." });
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "Outlook",
+      auth: {
+        user: "siteongacaocomunitaria@outlook.com",
+        pass: "@Olwjai16" // use a senha do email ou uma senha de app
+      }
+    });
+
+    const mailOptions = {
+      from: `"${nome}" <${email}>`,
+      to: "siteongacaocomunitaria@outlook.com",
+      subject: "Mensagem do site da ONG",
+      text: mensagem
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: "Mensagem enviada com sucesso!" });
+  } catch (error) {
+    console.error("Erro ao enviar e-mail:", error);
+    res.status(500).json({ error: "Erro ao enviar mensagem." });
+  }
+});
