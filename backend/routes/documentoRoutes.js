@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 
-const { salvarDocumento } = require('../controllers/DocumentoController');
+const { salvarDocumento } = require('../controllers/documentoController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
 // Configuração do armazenamento de arquivos
@@ -31,7 +31,7 @@ const upload = multer({
 });
 
 // Rotas
-router.get('/', require('../controllers/DocumentoController').listarDocumentos || ((req, res) => res.status(501).send('Não implementado')));
+router.get('/', require('../controllers/documentoController').listarDocumentos || ((req, res) => res.status(501).send('Não implementado')));
 router.post('/', authMiddleware, upload.single('arquivo'), salvarDocumento);
 
 module.exports = router;

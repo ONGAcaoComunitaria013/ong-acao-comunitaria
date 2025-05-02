@@ -4,7 +4,7 @@ const {
   getFotos,
   createFoto,
   toggleDestaque
-} = require('../controllers/FotoController');
+} = require('../controllers/fotoController');
 
 const authMiddleware = require('../middlewares/authMiddleware');
 
