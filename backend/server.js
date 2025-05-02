@@ -4,12 +4,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+const documentoRoutes = require('./routes/documentoRoutes');
+
 
 // Importações das rotas
-const documentoRoutes = require('./routes/documentoRoutes');
-const recadoRoutes = require('./routes/recadoRoutes');
+const recadoRoutes = require('./routes/RecadoRoutes');
 const fotoRoutes = require('./routes/fotoRoutes');
-const authRoutes = require('./routes/authRoutes');
+const authRoutes = require('./routes/authRoutes'); // ✅ adicionado aqui
 
 // Inicializa o aplicativo Express
 const app = express();
@@ -17,12 +18,17 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(cors());
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 // Definindo a pasta de arquivos estáticos (frontend)
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // Rotas para servir os HTMLs
+
+app.use('/api/documentos', documentoRoutes);
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
@@ -40,10 +46,9 @@ app.get('/recados', (req, res) => {
 });
 
 // Usar rotas da API
-app.use('/api/documentos', documentoRoutes);
 app.use('/api/recados', recadoRoutes);
 app.use('/api/fotos', fotoRoutes);
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes); // ✅ adicionada aqui
 
 // Porta
 const PORT = process.env.PORT || 5000;
