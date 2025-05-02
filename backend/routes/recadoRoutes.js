@@ -1,14 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const {
-  listarRecados,
-  criarRecado
-} = require('../controllers/recadoController');
-
 const authMiddleware = require('../middlewares/authMiddleware');
+const { listarRecados, criarRecado } = require('../controllers/recadoController');
 
-// Rotas
+// Rota para obter todos os recados
 router.get('/', listarRecados);
-router.post('/', authMiddleware, criarRecado); // ✅ proteção adicionada
+
+// Rota para criar um novo recado (requer autenticação)
+router.post('/', authMiddleware, criarRecado);
 
 module.exports = router;

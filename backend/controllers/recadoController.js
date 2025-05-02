@@ -1,7 +1,7 @@
 const Recado = require('../models/Recado');
 
 // Buscar todos os recados
-exports.getRecados = async (req, res) => {
+exports.listarRecados = async (req, res) => {
   try {
     const recados = await Recado.find().sort({ data: -1 }); // ordena do mais recente para o mais antigo
     res.json(recados);
@@ -11,7 +11,7 @@ exports.getRecados = async (req, res) => {
 };
 
 // Criar um novo recado
-exports.createRecado = async (req, res) => {
+exports.criarRecado = async (req, res) => {
   try {
     const { autor, mensagem } = req.body;
 
