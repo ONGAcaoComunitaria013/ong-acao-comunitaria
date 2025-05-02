@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - ONG Exemplo</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="header" id="mainHeader">
+        <div class="header-content">
+          <img src="assets/images/logo.png" alt="Logo ONG" class="logo-header" />
+          <h1 class="titulo-header" id="ongTitle">ONG Ação Comunitária</h1>
+          <nav>
+            <a class="btn-primary" href="index.html">Início</a>
+          </nav>
+        </div>
+      </header>
+<div style="height: 300px;"></div>
+      
+
+  <main class="main-content">
+    <section class="section">
+      <form id="formLogin" class="login-form">
+        <input type="email" name="email" placeholder="E-mail" required>
+        <input type="password" name="senha" placeholder="Senha" required>
+        <button type="submit" class="btn-primary">Entrar</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>ONG Exemplo © 2025</p>
+  </footer>
+
+  <script>
+    document.getElementById('formLogin').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const email = this.email.value.trim();
+      const senha = this.senha.value.trim();
+
+      fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('usuarioNome', data.nome);
+          alert('Login realizado com sucesso!');
+          const destino = localStorage.getItem('paginaOrigem') || 'portal.html';
+            window.location.href = destino;
+
+        } else {
+          alert('Falha no login: ' + (data.message || 'Verifique os dados.'));
+        }
+      })
+      .catch(() => {
+        alert('Erro ao tentar fazer login.');
+      });
+    });
+  </script>
+<script>
+    window.addEventListener("scroll", function () {
+      const header = document.getElementById("mainHeader");
+      header.classList.toggle("scrolled", window.scrollY > 50);
+    });
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,531 @@
+/* Importando fonte Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Fonte base */
+body {
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.6;
+  background: linear-gradient(to bottom right, #e6f0ff, #f4f9ff);
+  color: #333;
+  text-align: center;
+}
+
+/* Cabeçalho fixo com logo */
+header {
+  background: #004080;
+  color: white;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+header img {
+  height: 60px;
+  margin-bottom: 10px;
+}
+
+nav {
+  margin-top: 10px;
+}
+
+nav a,
+nav button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  background: #e60000;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+nav a:hover,
+nav button:hover {
+  background: #cc0000;
+}
+
+#saudacao {
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+/* Títulos */
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #004080;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+h3 {
+  font-size: 1.3rem;
+  color: #004080;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Seções */
+section {
+  padding: 60px 20px;
+  border-bottom: 2px solid #dde6f7; /* separador visual */
+}
+
+/* Centralizador de blocos */
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Botões */
+.btn-primary {
+  background-color: #e60000;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #cc0000;
+}
+
+/* Botão secundário azul (opcional) */
+.btn-secondary {
+  background-color: #004080;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #002f5f;
+}
+
+/* Formulários */
+form {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+form input,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+}
+
+form button[type="submit"] {
+  margin-top: 15px;
+  background: #e60000;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+form button:hover {
+  background: #cc0000;
+}
+
+/* Cards padrão */
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+  padding: 20px;
+  width: 250px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+/* Grids */
+.fotos-grid,
+.cards-container,
+.documentos-grid,
+.recados-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* Imagens */
+.foto-card {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* Botões de destaque */
+.btn-destaque {
+  background-color: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: color 0.2s ease;
+}
+
+.btn-destaque:hover {
+  opacity: 0.8;
+}
+
+.btn-destaque.destacada {
+  color: gold;
+  font-weight: bold;
+}
+
+/* Documentos */
+.documento {
+  background: white;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  width: 240px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.documento h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #004080;
+}
+
+.documento a {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: #e60000;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.documento a:hover {
+  background: #cc0000;
+}
+
+/* Rodapé com redes sociais */
+footer {
+  background: #004080;
+  color: white;
+  text-align: center;
+  padding: 30px 20px;
+  font-size: 14px;
+  margin-top: 40px;
+}
+
+footer .social-links {
+  margin-top: 10px;
+}
+
+footer .social-links a {
+  color: white;
+  margin: 0 10px;
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
+}
+
+footer .social-links a:hover {
+  color: #e60000;
+}
+
+/* Ícones com Font Awesome */
+.icono {
+  font-size: 2rem;
+  color: #004080;
+  margin-bottom: 0.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .card, .documento {
+    width: 90%;
+  }
+
+  .fotos-grid,
+  .cards-container,
+  .recados-preview {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav a, nav button {
+    display: block;
+    margin: 5px auto;
+  }
+}
+
+.destaque-header {
+  background: #004080;
+  padding: 10px 10px; /* ainda menor */
+  color: white;
+  text-align: center;
+}
+
+.logo-grande {
+  height: 90px; /* já é grande visualmente */
+  margin-bottom: 5px; /* ↓ logo colada no nome */
+  margin-top: 5px;
+}
+
+.titulo-ong {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 8px; /* ↓ colado no botão */
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+nav a.btn-primary,
+nav button.btn-primary {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+.header {
+  background-color: #004080;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px;
+}
+
+.header:not(.scrolled) {
+  min-height: 180px;
+}
+
+.logo-header {
+  width: 100%;
+  height: 220px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  background-color: #004080; /* reforça a faixa azul */
+  padding: 10px 0;
+  transition: all 0.3s ease;
+}
+
+
+
+.titulo-header {
+  font-size: 1.6rem;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  flex: 1;
+  display: none; /* esconde no topo */
+  margin: 0;
+}
+
+nav a.btn-primary,
+nav button.btn-primary {
+  background: #e60000;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+  border: none;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
+}
+
+nav a.btn-primary:hover,
+nav button.btn-primary:hover {
+  background: #cc0000;
+}
+
+/* === Modo compactado ao rolar === */
+.header.scrolled {
+  background-color: rgba(0, 64, 128, 0.9);
+  backdrop-filter: blur(8px);
+  padding: 6px 0;
+}
+
+.header.scrolled .header-content {
+  padding: 10px 20px;
+}
+
+.header.scrolled .logo-header {
+  width: auto;
+  height: 45px;
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+.header.scrolled .titulo-header {
+  display: block;
+}
+
+
+/* === rodape personalizado === */
+
+footer {
+  background: #004080;
+  color: white;
+  text-align: center;
+  padding: 30px 20px;
+  font-size: 14px;
+  margin-top: 40px;
+}
+
+footer .social-links {
+  margin: 10px 0;
+}
+
+footer .social-links a {
+  color: white;
+  margin: 0 10px;
+  font-size: 1.6rem;
+  transition: color 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+footer .social-links a:hover {
+  color: #e60000;
+}
+
+footer p {
+  margin: 5px 0;
+}
+
+footer p a {
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; /* espaço entre texto e ícone */
+  font-size: 1rem;
+}
+
+footer p a:hover {
+  color: #e60000;
+}
+
+/* === contato === */
+
+/* Container geral */
+.contato-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 30px;
+  max-width: 1100px;  /* Limita a largura total */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* Formulário e bloco de info */
+.contato-form,
+.contato-info {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  flex: 1 1 320px;
+  max-width: 500px;
+}
+
+/* Inputs do formulário */
+.contato-form input,
+.contato-form textarea {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+/* Botão */
+.contato-form button {
+  display: block;
+  margin: 0 auto;
+}
+
+/* Texto info */
+.contato-info p {
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.contato-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centraliza verticalmente com o form */
+  height: 100%;
+}
+
+.contato-form,
+.contato-info {
+  min-height: 350px;
+}

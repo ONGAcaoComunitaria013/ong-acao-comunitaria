@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal da ONG</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <header class="header" id="mainHeader">
+    <div class="header-content">
+      <img src="assets/images/logo.png" alt="Logo ONG" class="logo-header" />
+      <h1 class="titulo-header" id="ongTitle">ONG Ação Comunitária</h1>
+      <nav>
+        <p id="saudacao" style="display: none;">Bem-vindo(a), <strong id="usuarioNome">usuário</strong>!</p>
+        <a class="btn-primary" href="login.html" id="btnLogin" onclick="salvarOrigem()">Login</a>
+        <button class="btn-primary" onclick="logout()" id="btnLogout" style="display: none;">Sair</button>
+      </nav>
+    </div>
+  </header>
+  
+  <div style="height: 200px;"></div>
+
+  
+  
+  
+
+  <!-- Conteúdo principal -->
+  <main class="main-content">
+    <div style="height: 120px;"></div>
+
+    <!-- Home -->
+    <section id="home">
+      <h2>Bem-vindo!</h2>
+      <p>Nosso objetivo é fazer a diferença!</p>
+    </section>
+
+    <!-- Transparência -->
+    <section id="transparencia" class="section">
+      <h2>Transparência</h2>
+      <p>Acesse nossos documentos públicos, como relatórios financeiros e atas de reuniões.</p>
+      <a class="btn-primary" href="portal.html">Acessar Portal de Transparência</a>
+    </section>
+
+    <!-- Recados -->
+    <section id="recados" class="section">
+      <h2>Recado mais recente</h2>
+      <div id="recado-preview" class="recados-preview"></div>
+
+      <a class="btn-primary" href="recados.html">Ver todos os recados</a>
+    </section>
+
+    <!-- Fotos -->
+    <section id="fotos" class="section">
+      <h2>Última foto da galeria</h2>
+      <div class="cards-container" id="foto-preview">
+        <p>Carregando foto...</p>
+      </div>
+      <a class="btn-primary" href="fotos.html">Ver galeria completa</a>
+    </section>
+
+    <!-- Contato -->
+    <section id="contato" class="section">
+      <h2>Entre em Contato</h2>
+      <div class="contato-container">
+        
+        <!-- Formulário -->
+        <form id="formContato" class="contato-form">
+          <input type="text" name="nome" placeholder="Seu Nome" required>
+          <input type="email" name="email" placeholder="Seu E-mail" required>
+          <textarea name="mensagem" placeholder="Sua Mensagem" required></textarea>
+          <button type="submit" class="btn-primary">Enviar</button>
+        </form>
+    
+        <!-- Informações de contato -->
+        <div class="contato-info">
+          <p><strong>Endereço:</strong><br>
+            Rua José Ferreira Canaes, 263<br>
+            Santo Antônio - Guarujá - SP
+          </p>
+          <p><strong>Telefone:</strong> (13) 3357-7460</p>
+          <iframe
+            src="https://www.google.com/maps?q=Rua+Jos%C3%A9+Ferreira+Canaes,+263+-+Guaruj%C3%A1,+SP&output=embed"
+            width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    
+      </div>
+    </section>
+    
+
+  </main>
+
+  <!-- Rodapé -->
+  <footer>
+    <p>ONG Ação Comunitária © 2025</p>
+    <div class="social-links">
+      <a href="https://www.facebook.com/ongprimaveracomunitaria/?locale=pt_BR" target="_blank" aria-label="Facebook">
+        <i class="fab fa-facebook"></i>
+      </a>
+      <a href="https://www.instagram.com/ongacaocomunitaria/" target="_blank" aria-label="Instagram ONG">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+    <p>
+      Design by: 
+      <a href="https://www.instagram.com/yamatodesigner/" target="_blank" aria-label="Instagram do designer">
+        @YamatoDesigner <i class="fab fa-instagram"></i>
+      </a>
+    </p>
+  </footer>
+  
+  
+
+<!-- Scripts -->
+
+<!-- Carregar últimos recados -->
+<script>
+  fetch('/api/recados')
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('recado-preview');
+      container.innerHTML = '';
+
+      if (data.length === 0) {
+        container.innerHTML = '<p>Não há recados cadastrados ainda.</p>';
+        return;
+      }
+
+      const ultimosRecados = data.slice(0, 4);
+
+      ultimosRecados.forEach(recado => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+
+        const mensagem = document.createElement('p');
+        mensagem.textContent = `"${recado.mensagem}"`;
+
+        const dataPostagem = new Date(recado.data).toLocaleDateString('pt-BR');
+        const autor = document.createElement('small');
+        autor.textContent = `Postado por ${recado.autor || 'Anônimo'} em ${dataPostagem}`;
+
+        card.appendChild(mensagem);
+        card.appendChild(autor);
+        container.appendChild(card);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById('recado-preview').innerHTML = '<p>Erro ao carregar recado.</p>';
+    });
+</script>
+
+<!-- Carregar fotos em destaque -->
+<script>
+  fetch('/api/fotos/destaques')
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('foto-preview');
+      container.innerHTML = '';
+
+      if (data.length === 0) {
+        container.innerHTML = '<p>Não há fotos em destaque no momento.</p>';
+        return;
+      }
+
+      data.forEach(foto => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+
+        const img = document.createElement('img');
+        img.src = foto.url;
+        img.alt = foto.legenda || 'Foto de evento';
+        img.classList.add('foto-card');
+
+        const legenda = document.createElement('p');
+        legenda.textContent = foto.legenda || 'Sem legenda';
+
+        card.appendChild(img);
+        card.appendChild(legenda);
+        container.appendChild(card);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById('foto-preview').innerHTML = '<p>Erro ao carregar fotos em destaque.</p>';
+    });
+</script>
+
+<!-- Script: ocultar botão de login se estiver logado -->
+<script>
+  const btn = document.getElementById('btnLogin');
+  if (btn && localStorage.getItem('token')) {
+    btn.style.display = 'none';
+  }
+</script>
+<script>
+  const token = localStorage.getItem('token');
+  const nomeUsuario = localStorage.getItem('usuarioNome');
+
+  if (token && nomeUsuario) {
+    const saudacao = document.getElementById('saudacao');
+    const nomeSpan = document.getElementById('usuarioNome');
+    const btnLogin = document.getElementById('btnLogin');
+    const btnLogout = document.getElementById('btnLogout');
+
+    if (saudacao) saudacao.style.display = 'inline';
+    if (btnLogin) btnLogin.style.display = 'none';
+    if (btnLogout) btnLogout.style.display = 'inline-block';
+    if (nomeSpan) nomeSpan.textContent = nomeUsuario;
+  }
+
+  function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuarioNome');
+    alert('Você saiu do sistema.');
+    window.location.href = 'login.html';
+  }
+</script>
+<script>
+  function salvarOrigem() {
+    localStorage.setItem('paginaOrigem', window.location.pathname);
+  }
+</script>
+<script>
+  window.addEventListener("scroll", function () {
+    const header = document.getElementById("mainHeader");
+    header.classList.toggle("scrolled", window.scrollY > 50);
+  });
+</script>
+
+
+
+</body>
+</html>
+
+

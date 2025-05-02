@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Galeria de Fotos</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .fotos-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .card {
+      max-width: 250px;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .foto-card {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    .btn-destaque {
+      background-color: transparent;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .btn-destaque:hover {
+      opacity: 0.8;
+    }
+
+    .btn-destaque.destacada {
+      color: gold;
+      font-weight: bold;
+    }
+
+    .upload-section {
+      margin-top: 2rem;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="header" id="mainHeader">
+    <div class="header-content">
+      <img src="assets/images/logo.png" alt="Logo ONG" class="logo-header" />
+      <h1 class="titulo-header" id="ongTitle">ONG Ação Comunitária</h1>
+      <nav>
+        <p id="saudacao" style="display: none;">Bem-vindo(a), <strong id="usuarioNome">usuário</strong>!</p>
+        <a class="btn-primary" href="index.html">Voltar para o início</a>
+        <a class="btn-primary" href="login.html" id="btnLogin" onclick="salvarOrigem()">Login</a>
+        <button class="btn-primary" onclick="logout()" id="btnLogout" style="display: none;">Sair</button>
+      </nav>
+    </div>
+  </header>
+  <div style="height: 260px;"></div>  
+
+  <main>
+    <section class="galeria-section">
+      <h2>Nossa Galeria de Fotos!</h2>
+      <div id="fotosContainer" class="fotos-grid"></div>
+    </section>
+
+    <!-- Essa seção será escondida se não estiver logado -->
+    <section class="upload-section" id="uploadSection" style="display: none;">
+      <h3>Enviar nova foto</h3>
+      <form id="formFoto">
+        <input type="text" name="url" placeholder="URL da imagem" required>
+        <input type="text" name="legenda" placeholder="Legenda da imagem">
+        <button type="submit">Enviar</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>ONG Exemplo - Todos os direitos reservados © 2025</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+
+      // Exibir formulário de envio apenas se logado
+      const uploadSection = document.getElementById('uploadSection');
+      if (token && uploadSection) {
+        uploadSection.style.display = 'block';
+      }
+
+      const container = document.getElementById('fotosContainer');
+
+      fetch('/api/fotos')
+        .then(res => res.json())
+        .then(data => {
+          if (data.length === 0) {
+            container.innerHTML = '<p>Não há fotos disponíveis no momento.</p>';
+            return;
+          }
+
+          let totalDestacadas = data.filter(f => f.destaque).length;
+
+          data.forEach(foto => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+
+            const img = document.createElement('img');
+            img.src = foto.url;
+            img.alt = foto.legenda || 'Foto de evento';
+            img.classList.add('foto-card');
+
+            const legenda = document.createElement('p');
+            legenda.textContent = foto.legenda || 'Sem legenda';
+
+            card.appendChild(img);
+            card.appendChild(legenda);
+
+            if (token) {
+              let isDestacada = !!foto.destaque;
+              const botaoDestaque = document.createElement('button');
+              botaoDestaque.textContent = isDestacada ? '★ Destacada' : '☆ Destacar';
+              botaoDestaque.className = 'btn-destaque';
+              if (isDestacada) botaoDestaque.classList.add('destacada');
+
+              botaoDestaque.onclick = () => {
+                if (!isDestacada && totalDestacadas >= 5) {
+                  alert('Você só pode destacar até 5 fotos.');
+                  return;
+                }
+
+                fetch(`/api/fotos/${foto._id}/destaque`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                  }
+                })
+                .then(res => res.json())
+                .then(json => {
+                  alert(json.message);
+
+                  // Atualiza o botão no DOM
+                  isDestacada = !isDestacada;
+                  botaoDestaque.textContent = isDestacada ? '★ Destacada' : '☆ Destacar';
+                  botaoDestaque.classList.toggle('destacada', isDestacada);
+                  totalDestacadas += isDestacada ? 1 : -1;
+                })
+                .catch(err => {
+                  console.error('Erro ao destacar:', err);
+                  alert('Erro ao tentar destacar a foto.');
+                });
+              };
+
+              card.appendChild(botaoDestaque);
+            }
+
+            container.appendChild(card);
+          });
+        })
+        .catch(err => {
+          console.error('Erro ao carregar fotos:', err);
+          container.innerHTML = '<p>Erro ao carregar as fotos.</p>';
+        });
+
+      // Envio de nova foto
+      document.getElementById('formFoto')?.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const url = this.url.value.trim();
+        const legenda = this.legenda.value.trim();
+
+        if (!url) {
+          alert('Por favor, insira a URL da imagem.');
+          return;
+        }
+
+        fetch('/api/fotos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ url, legenda })
+        })
+        .then(res => res.json())
+        .then(data => {
+          alert('Foto enviada com sucesso!');
+          this.reset();
+          location.reload();
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Erro ao enviar a foto.');
+        });
+      });
+    });
+
+    // Saudação e logout
+    const token = localStorage.getItem('token');
+    const nomeUsuario = localStorage.getItem('usuarioNome');
+
+    if (token && nomeUsuario) {
+      const saudacao = document.getElementById('saudacao');
+      const nomeSpan = document.getElementById('usuarioNome');
+      const btnLogin = document.getElementById('btnLogin');
+      const btnLogout = document.getElementById('btnLogout');
+
+      if (saudacao) saudacao.style.display = 'inline';
+      if (btnLogin) btnLogin.style.display = 'none';
+      if (btnLogout) btnLogout.style.display = 'inline-block';
+      if (nomeSpan) nomeSpan.textContent = nomeUsuario;
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuarioNome');
+      alert('Você saiu do sistema.');
+      window.location.href = 'login.html';
+    }
+
+    function salvarOrigem() {
+      localStorage.setItem('paginaOrigem', window.location.pathname);
+    }
+  </script>
+<script>
+  window.addEventListener("scroll", function () {
+    const header = document.getElementById("mainHeader");
+    header.classList.toggle("scrolled", window.scrollY > 50);
+  });
+</script>
+
+
+
+</body>
+</html>

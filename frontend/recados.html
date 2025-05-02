@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recados da Comunidade</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .recados-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .recados-container .card {
+      max-width: 300px;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <header class="header" id="mainHeader">
+    <div class="header-content">
+      <img src="assets/images/logo.png" alt="Logo ONG" class="logo-header" />
+      <h1 class="titulo-header" id="ongTitle">ONG Ação Comunitária</h1>
+      <nav>
+        <p id="saudacao" style="display: none;">Bem-vindo(a), <strong id="usuarioNome">usuário</strong>!</p>
+        <a class="btn-primary" href="index.html">Início</a>
+        <a class="btn-primary" href="login.html" id="btnLogin" onclick="salvarOrigem()">Login</a>
+        <button class="btn-primary" onclick="logout()" id="btnLogout" style="display: none;">Sair</button>
+      </nav>
+    </div>
+  </header>
+  <div style="height: 260px;"></div>
+
+
+  <main>
+    <section>
+      <h2>Recados Recentes</h2>
+      <div id="recadosContainer" class="recados-container">
+        <p>Carregando recados...</p>
+      </div>
+    </section>
+
+    <section id="secaoForm" style="margin-top: 2rem;">
+      <h3>Deixe seu recado</h3>
+      <form id="formRecado">
+        <input type="text" name="autor" placeholder="Seu nome (opcional)" />
+        <textarea name="mensagem" placeholder="Sua mensagem" required></textarea>
+        <button type="submit">Enviar</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>ONG Exemplo © 2025</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      const nomeUsuario = localStorage.getItem('usuarioNome');
+
+      // Mostrar/ocultar saudação e botões
+      const saudacao = document.getElementById('saudacao');
+      const nomeSpan = document.getElementById('usuarioNome');
+      const btnLogin = document.getElementById('btnLogin');
+      const btnLogout = document.getElementById('btnLogout');
+
+      if (token && nomeUsuario) {
+        if (saudacao) saudacao.style.display = 'inline';
+        if (btnLogin) btnLogin.style.display = 'none';
+        if (btnLogout) btnLogout.style.display = 'inline-block';
+        if (nomeSpan) nomeSpan.textContent = nomeUsuario;
+      } else {
+        const formSecao = document.getElementById('secaoForm');
+        if (formSecao) formSecao.style.display = 'none';
+        if (btnLogout) btnLogout.style.display = 'none';
+        if (btnLogin) btnLogin.style.display = 'inline-block';
+      }
+
+      // Carregar recados
+      fetch('/api/recados')
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('recadosContainer');
+          container.innerHTML = '';
+
+          if (data.length === 0) {
+            container.innerHTML = '<p>Nenhum recado encontrado.</p>';
+            return;
+          }
+
+          data.forEach(recado => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+
+            const mensagem = document.createElement('p');
+            mensagem.textContent = `"${recado.mensagem}"`;
+
+            const dataPostagem = new Date(recado.data).toLocaleDateString('pt-BR');
+            const autor = document.createElement('small');
+            autor.textContent = `Postado por ${recado.autor || 'Anônimo'} em ${dataPostagem}`;
+
+            card.appendChild(mensagem);
+            card.appendChild(autor);
+            container.appendChild(card);
+          });
+        })
+        .catch(error => {
+          console.error('Erro ao carregar recados:', error);
+          document.getElementById('recadosContainer').innerHTML = '<p>Erro ao carregar os recados.</p>';
+        });
+
+      // Enviar novo recado
+      document.getElementById('formRecado')?.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const autor = this.autor.value.trim();
+        const mensagem = this.mensagem.value.trim();
+        const token = localStorage.getItem('token');
+
+        if (!mensagem) {
+          alert('Por favor, escreva uma mensagem.');
+          return;
+        }
+
+        fetch('/api/recados', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ autor, mensagem })
+        })
+          .then(res => res.json())
+          .then(data => {
+            alert('Recado enviado com sucesso!');
+            this.reset();
+            location.reload();
+          })
+          .catch(err => {
+            console.error(err);
+            alert('Erro ao enviar o recado.');
+          });
+      });
+    });
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuarioNome');
+      alert('Você saiu do sistema.');
+      window.location.href = 'login.html';
+    }
+
+    function salvarOrigem() {
+      localStorage.setItem('paginaOrigem', window.location.pathname);
+    }
+  </script>
+<script>
+  window.addEventListener("scroll", function () {
+    const header = document.getElementById("mainHeader");
+    header.classList.toggle("scrolled", window.scrollY > 50);
+  });
+</script>
+
+
+</body>
+</html>

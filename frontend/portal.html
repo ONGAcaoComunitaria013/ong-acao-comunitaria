@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal de Transparência</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="header" id="mainHeader">
+    <div class="header-content">
+      <img src="assets/images/logo.png" alt="Logo ONG" class="logo-header" />
+      <h1 class="titulo-header" id="ongTitle">ONG Ação Comunitária</h1>
+      <nav>
+        <p id="saudacao" style="display: none;">Bem-vindo(a), <strong id="usuarioNome">usuário</strong>!</p>
+        <a class="btn-primary" href="index.html">Voltar para o início</a>
+        <a class="btn-primary" href="login.html" id="btnLogin" onclick="salvarOrigem()">Login</a>
+        <button class="btn-primary" onclick="logout()" id="btnLogout" style="display: none;">Sair</button>
+      </nav>
+    </div>
+  </header>
+  <div style="height: 260px;"></div>  
+
+  <main>
+    <section class="documentos-section">
+      <h2>Documentos Disponíveis</h2>
+      <div class="documentos-grid">
+        <!-- Documentos renderizados via JS -->
+      </div>
+    </section>
+
+    <section id="formularioDocumento" style="display: none; margin-top: 2rem;">
+      <h3>Adicionar novo documento</h3>
+      <form id="formDocumento">
+        <input type="text" name="titulo" placeholder="Título do documento" required />
+        <input type="text" name="url" placeholder="Ou link externo (Drive, etc)" />
+        <input type="file" name="arquivo" accept=".pdf,.jpg,.jpeg,.png" />
+        <button type="submit">Enviar</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>ONG Exemplo © 2025</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      const nomeUsuario = localStorage.getItem('usuarioNome');
+
+      const nomeSpan = document.getElementById('usuarioNome');
+      const saudacao = document.getElementById('saudacao');
+      const btnLogin = document.getElementById('btnLogin');
+      const btnLogout = document.getElementById('btnLogout');
+
+      if (token) {
+        if (nomeSpan) nomeSpan.textContent = nomeUsuario || 'usuário';
+        if (saudacao) saudacao.style.display = 'inline';
+        if (btnLogin) btnLogin.style.display = 'none';
+        if (btnLogout) btnLogout.style.display = 'inline-block';
+        document.getElementById('formularioDocumento').style.display = 'block';
+      } else {
+        if (saudacao) saudacao.style.display = 'none';
+        if (btnLogout) btnLogout.style.display = 'none';
+        if (btnLogin) btnLogin.style.display = 'inline-block';
+      }
+
+      // ✅ Agora com token incluído na requisição
+      fetch('/api/documentos', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(res => {
+          if (!res.ok) throw new Error('Não autorizado');
+          return res.json();
+        })
+        .then(docs => {
+          const grid = document.querySelector('.documentos-grid');
+          if (!docs.length) {
+            grid.innerHTML = '<p>Nenhum documento encontrado.</p>';
+            return;
+          }
+
+          docs.forEach(doc => {
+            const div = document.createElement('div');
+            div.className = 'documento';
+
+            const titulo = document.createElement('h3');
+            titulo.textContent = doc.titulo;
+
+            const link = document.createElement('a');
+            link.textContent = 'Baixar Documento';
+            link.download = true;
+
+            const hrefFinal = doc.url || doc.link || `/uploads/${doc.arquivo}`;
+            link.href = hrefFinal;
+
+            div.appendChild(titulo);
+            div.appendChild(link);
+            grid.appendChild(div);
+          });
+        })
+        .catch((err) => {
+          console.warn('Erro ao carregar documentos:', err);
+          const grid = document.querySelector('.documentos-grid');
+          grid.innerHTML = '<p>Erro ao carregar documentos.</p>';
+        });
+
+      // Enviar novo documento
+      document.getElementById('formDocumento')?.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const titulo = this.titulo.value.trim();
+        const url = this.url.value.trim();
+        const arquivo = this.arquivo.files[0];
+
+        if (!titulo || (!url && !arquivo)) {
+          alert('Preencha o título e adicione um link ou arquivo.');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('titulo', titulo);
+        if (url) formData.append('url', url);
+        if (arquivo) formData.append('arquivo', arquivo);
+
+        fetch('/api/documentos', {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + token
+          },
+          body: formData
+        })
+          .then(res => res.json())
+          .then(data => {
+            alert(data.message || 'Documento enviado!');
+            this.reset();
+            location.reload();
+          })
+          .catch(() => {
+            alert('Erro ao enviar o documento.');
+          });
+      });
+    });
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuarioNome');
+      alert('Você saiu do sistema.');
+      window.location.href = 'login.html';
+    }
+
+    function salvarOrigem() {
+      localStorage.setItem('paginaOrigem', window.location.pathname);
+    }
+  </script>
+<script>
+  window.addEventListener("scroll", function () {
+    const header = document.getElementById("mainHeader");
+    header.classList.toggle("scrolled", window.scrollY > 50);
+  });
+</script>
+
+
+</body>
+</html>
