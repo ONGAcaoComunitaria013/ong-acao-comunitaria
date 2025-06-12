@@ -11,6 +11,8 @@ const documentoRoutes = require('./routes/documentoRoutes');
 const recadoRoutes = require('./routes/recadoRoutes');
 const fotoRoutes = require('./routes/fotoRoutes');
 const authRoutes = require('./routes/authRoutes'); // ✅ adicionado aqui
+const documentosListRoute = require('./routes/documentosListRoute');
+
 
 // Inicializa o aplicativo Express
 const app = express();
@@ -18,6 +20,7 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(cors());
+app.use('/documentos', documentosListRoute);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
